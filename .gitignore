@@ -1,0 +1,36 @@
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+.mplconfig/
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# User-licensed or generated data
+data/raw/
+data/processed/
+demo_run/
+*.parquet
+*.feather
+
+# Generated research outputs (curated illustrative outputs remain tracked)
+results/*
+!results/illustrative/
+!results/illustrative/**
+report/
+
+# Credentials and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials*.json
+secrets*.json

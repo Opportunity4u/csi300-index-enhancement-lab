@@ -1,0 +1,11 @@
+{
+  "prediction_rows": 82355,
+  "leakage_violations_train_end_ge_decision": 0,
+  "weight_sum_max_abs_error": 1.6986412276764895e-14,
+  "minimum_actual_weight": 0.0,
+  "negative_cost_days": 0,
+  "negative_turnover_days": 0,
+  "trade_rows": 1651,
+  "max_recorded_participation": 1.1407326839930761e-10,
+  "passed": true
+}
