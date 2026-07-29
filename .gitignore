@@ -8,6 +8,10 @@ htmlcov/
 .mypy_cache/
 .ruff_cache/
 .mplconfig/
+.build/
+build/
+dist/
+*.egg-info/
 .idea/
 .vscode/
 .DS_Store
