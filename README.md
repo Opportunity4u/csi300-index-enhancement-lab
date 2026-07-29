@@ -22,6 +22,7 @@ The project is designed to answer a practical question:
 - Next-trading-day execution, turnover caps, no-trade bands and asymmetric costs.
 - Expanding-window main test and rolling-window robustness check.
 - Reproducible synthetic-data demo requiring no proprietary market data.
+- Broker-agnostic shadow-order packets with A-share board-lot rounding.
 
 ## Architecture
 
@@ -88,6 +89,7 @@ src/csi300_enhancement/
   backtest.py          drift, execution, turnover and cost simulation
   metrics.py           absolute and active performance metrics
   reporting.py         public charts and report generation
+  shadow.py            reviewable paper-account order packets
 tests/                  invariants and timing tests
 results/illustrative/   aggregate, bias-disclosed example outputs
 ```
@@ -104,6 +106,9 @@ results/illustrative/   aggregate, bias-disclosed example outputs
 
 Use genuine dated membership, total-return prices, benchmark weights and
 liquidity data before making investment claims.
+
+For a forward shadow-account workflow, see
+[docs/paper-trading.md](docs/paper-trading.md).
 
 ## License and disclaimer
 
