@@ -5,7 +5,6 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-
 REQUIRED_PRICE_COLUMNS = {"Date", "Ticker", "Close"}
 REQUIRED_WEIGHT_COLUMNS = {"AsOfDate", "Ticker", "BenchmarkWeight"}
 REQUIRED_CONSTITUENT_COLUMNS = {"AsOfDate", "Ticker"}

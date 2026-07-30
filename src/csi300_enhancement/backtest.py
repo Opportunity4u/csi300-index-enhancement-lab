@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+
 import numpy as np
 import pandas as pd
 
@@ -64,7 +65,6 @@ def run_backtest(
     for date in dates:
         r = asset_returns.loc[date].fillna(0.0)
         gross_return = float((weights * r).sum())
-        nav_before_cost = nav * (1.0 + gross_return)
         drifted = weights * (1.0 + r)
         drifted = drifted / drifted.sum() if drifted.sum() > 0 else weights
         traded_l1 = 0.0
@@ -125,4 +125,3 @@ def run_backtest(
         weights=pd.DataFrame(weight_rows).fillna(0.0),
         trades=pd.DataFrame(trade_rows),
     )
-

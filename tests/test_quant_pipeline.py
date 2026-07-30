@@ -1,5 +1,5 @@
-from pathlib import Path
 import sys
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -34,4 +34,3 @@ def test_decision_is_executed_next_trading_day():
     targets = pd.DataFrame({"A": [1.0]}, index=pd.DatetimeIndex(["2024-01-05"]))
     mapped = map_decisions_to_execution_dates(targets, dates)
     assert mapped.index[0] == pd.Timestamp("2024-01-08")
-

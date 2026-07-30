@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from pathlib import Path
 import json
+from pathlib import Path
 
 import pandas as pd
 
@@ -168,7 +168,7 @@ def run_pipeline(project_root: Path, config: ResearchConfig | None = None) -> di
         "constituent_date": str(constituents["AsOfDate"].max().date()),
         "weight_date": str(anchor_date.date()),
         "start": str(prices["Date"].min().date()), "end": str(prices["Date"].max().date()),
-        "tickers_with_prices": int(prices["Ticker"].nunique()), "price_rows": int(len(prices)),
+        "tickers_with_prices": int(prices["Ticker"].nunique()), "price_rows": len(prices),
     }
     (results / "data_quality.json").write_text(json.dumps(data_quality, ensure_ascii=False, indent=2), encoding="utf-8")
     write_markdown_report(metrics, ic_summary, diagnostics, config.to_dict(), data_quality, cost_sensitivity, project_root / "report" / "quant_research_report.md")

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import numpy as np
 import pandas as pd
 from sklearn.linear_model import Ridge
 from sklearn.pipeline import Pipeline
@@ -68,4 +67,3 @@ def walk_forward_predictions(
     predictions = pd.concat(prediction_rows, ignore_index=True) if prediction_rows else pd.DataFrame()
     coefficients = pd.DataFrame(coefficient_rows)
     return predictions, coefficients
-
