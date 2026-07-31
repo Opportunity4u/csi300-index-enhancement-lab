@@ -31,3 +31,12 @@ instructions. It deliberately performs no automatic network submission.
 
 This creates forward evidence without pretending that simulated fills are live
 fund performance.
+
+## Automated local ledger
+
+The `monitor` command adds a fully local, broker-independent paper ledger. It
+marks holdings at each close, executes a queued Friday target on the next
+observed market session, applies board-lot rounding and modeled buy/sell costs,
+and preserves target-versus-actual differences. Complete holdings and fills
+remain outside the public repository. The public forward record contains only
+aggregate performance and model-health diagnostics.

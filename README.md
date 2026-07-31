@@ -23,6 +23,7 @@ The project is designed to answer a practical question:
 - Expanding-window main test and rolling-window robustness check.
 - Reproducible synthetic-data demo requiring no proprietary market data.
 - Broker-agnostic shadow-order packets with A-share board-lot rounding.
+- Forward-only daily monitoring with a private ledger and aggregate public record.
 
 ## Architecture
 
@@ -60,6 +61,25 @@ csi300-research run --root .
 
 Expected files are documented in [docs/data-contract.md](docs/data-contract.md).
 
+## Forward daily monitor
+
+The forward monitor keeps market data, predictions, holdings and orders under a
+private root while writing only aggregate diagnostics into this repository.
+It attempts a fixed-specification Ridge refit every market day, but formal
+portfolio targets remain weekly and execute on the following market session.
+
+```bash
+csi300-research monitor \
+  --root /path/to/private-research-root \
+  --public-root . \
+  --publish
+```
+
+The command refreshes normalized daily prices, checks coverage, evaluates the
+five-session forecast that has just matured, marks the paper account and writes
+`docs/forward-monitoring.md`. It never submits broker orders. See
+[docs/forward-protocol.md](docs/forward-protocol.md).
+
 ## Illustrative empirical snapshot
 
 The repository includes aggregate outputs from one historical research run:
@@ -90,6 +110,9 @@ src/csi300_enhancement/
   metrics.py           absolute and active performance metrics
   reporting.py         public charts and report generation
   shadow.py            reviewable paper-account order packets
+  market_data.py       incremental private price-panel updater
+  monitor.py           daily diagnostics and redacted public record
+  paper.py             persistent board-lot paper ledger
 tests/                  invariants and timing tests
 results/illustrative/   aggregate, bias-disclosed example outputs
 ```
@@ -103,6 +126,9 @@ results/illustrative/   aggregate, bias-disclosed example outputs
   reliable historical traded amount.
 - No order-book fill uncertainty, limit-up/limit-down mechanics, corporate
   actions or tax-lot accounting are simulated.
+- The optional Yahoo batch and Eastmoney fallback adapters are operational
+  conveniences, not an institutional market-data contract; failed or incomplete
+  updates stop the run.
 
 Use genuine dated membership, total-return prices, benchmark weights and
 liquidity data before making investment claims.

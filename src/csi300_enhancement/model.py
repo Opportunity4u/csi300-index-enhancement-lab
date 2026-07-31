@@ -6,6 +6,71 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
 
+def fit_model_as_of(
+    panel: pd.DataFrame,
+    features: list[str],
+    rebalance_dates: pd.DatetimeIndex,
+    prediction_date: pd.Timestamp | str,
+    knowledge_date: pd.Timestamp | str | None = None,
+    horizon: int = 5,
+    ridge_alpha: float = 10.0,
+    training_mode: str = "expanding",
+    rolling_years: int = 3,
+    min_train_rows: int = 5_000,
+) -> tuple[pd.DataFrame, pd.DataFrame, dict]:
+    """Refit the fixed Ridge specification using only fully matured labels."""
+    prediction_date = pd.Timestamp(prediction_date).normalize()
+    knowledge_date = pd.Timestamp(knowledge_date or prediction_date).normalize()
+    target_col = f"ForwardReturn{horizon}D"
+    target_date_col = f"TargetDate{horizon}D"
+    usable = panel.dropna(subset=features + [target_col, target_date_col]).copy()
+    train = usable[
+        (usable[target_date_col] < knowledge_date)
+        & (usable["Date"].isin(rebalance_dates))
+    ]
+    if training_mode == "rolling":
+        train = train[train["Date"] >= knowledge_date - pd.DateOffset(years=rolling_years)]
+    if len(train) < min_train_rows:
+        raise ValueError(f"insufficient mature training rows: {len(train)} < {min_train_rows}")
+
+    today = panel[panel["Date"] == prediction_date].dropna(subset=features).copy()
+    if today.empty:
+        raise ValueError(f"no complete factor rows for prediction date {prediction_date.date()}")
+    model = Pipeline([
+        ("scale", StandardScaler()),
+        ("ridge", Ridge(alpha=ridge_alpha, fit_intercept=True)),
+    ])
+    model.fit(train[features], train[target_col])
+    train_start = pd.Timestamp(train["Date"].min())
+    train_end = pd.Timestamp(train[target_date_col].max())
+    today["PredictedReturn"] = model.predict(today[features])
+    today["DecisionDate"] = prediction_date
+    today["ModelTrainStart"] = train_start
+    today["ModelTrainEnd"] = train_end
+    today["TrainingMode"] = training_mode
+    predictions = today[[
+        "DecisionDate", "Ticker", "PredictedReturn", "ModelTrainStart",
+        "ModelTrainEnd", "TrainingMode",
+    ]]
+    coefficients = pd.DataFrame({
+        "ModelDate": prediction_date,
+        "Feature": features,
+        "Coefficient": model.named_steps["ridge"].coef_,
+        "TrainStart": train_start,
+        "TrainEnd": train_end,
+        "TrainingMode": training_mode,
+    })
+    metadata = {
+        "PredictionDate": prediction_date,
+        "KnowledgeDate": knowledge_date,
+        "TrainStart": train_start,
+        "TrainEnd": train_end,
+        "TrainingRows": len(train),
+        "PredictionRows": len(predictions),
+    }
+    return predictions.reset_index(drop=True), coefficients, metadata
+
+
 def walk_forward_predictions(
     panel: pd.DataFrame,
     features: list[str],

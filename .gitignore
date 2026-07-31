@@ -28,6 +28,8 @@ demo_run/
 results/*
 !results/illustrative/
 !results/illustrative/**
+!results/forward/
+!results/forward/**
 report/
 
 # Credentials and local configuration

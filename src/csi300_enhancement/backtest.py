@@ -22,6 +22,36 @@ def _matched_trade(delta: pd.Series) -> pd.Series:
     return buys * (matched / buys.sum()) - sells * (matched / sells.sum())
 
 
+def constrain_rebalance(
+    current_weights: pd.Series,
+    target_weights: pd.Series,
+    min_trade_weight: float = 0.0,
+    one_way_turnover_cap: float | None = None,
+) -> tuple[pd.Series, pd.Series, dict]:
+    """Convert an ideal long-only target into a cash-neutral executable target."""
+    idx = current_weights.index.union(target_weights.index)
+    current = current_weights.reindex(idx).fillna(0.0).clip(lower=0.0)
+    target = target_weights.reindex(idx).fillna(0.0).clip(lower=0.0)
+    if current.sum() <= 0 or target.sum() <= 0:
+        raise ValueError("current and target weights must each have positive total weight")
+    current /= current.sum()
+    target /= target.sum()
+    raw_delta = target - current
+    thresholded = raw_delta.where(raw_delta.abs() >= min_trade_weight, 0.0)
+    delta = _matched_trade(thresholded)
+    pre_cap_turnover = 0.5 * float(delta.abs().sum())
+    if one_way_turnover_cap is not None and pre_cap_turnover > one_way_turnover_cap > 0:
+        delta *= one_way_turnover_cap / pre_cap_turnover
+    actual_target = (current + delta).clip(lower=0.0)
+    actual_target /= actual_target.sum()
+    diagnostics = {
+        "RawOneWayTurnover": 0.5 * float(raw_delta.abs().sum()),
+        "ThresholdedOneWayTurnover": pre_cap_turnover,
+        "ExecutedOneWayTurnover": 0.5 * float(delta.abs().sum()),
+    }
+    return actual_target, delta, diagnostics
+
+
 def map_decisions_to_execution_dates(targets: pd.DataFrame, trading_dates: pd.DatetimeIndex) -> pd.DataFrame:
     rows = []
     dates = pd.DatetimeIndex(trading_dates)

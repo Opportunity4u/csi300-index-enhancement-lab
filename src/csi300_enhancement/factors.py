@@ -41,9 +41,32 @@ def build_factor_panel(prices: pd.DataFrame, horizon: int = 5) -> pd.DataFrame:
     return df.sort_values(["Date", "Ticker"]).reset_index(drop=True)
 
 
-def rebalance_dates_from_panel(panel: pd.DataFrame, weekday: int = 4) -> pd.DatetimeIndex:
+def rebalance_dates_from_panel(
+    panel: pd.DataFrame,
+    weekday: int = 4,
+    as_of: pd.Timestamp | str | None = None,
+    completed_only: bool = True,
+) -> pd.DatetimeIndex:
+    """Return the last observed session in each completed decision week.
+
+    A partial current week is deliberately excluded. This prevents a Tuesday
+    data cutoff from being mistaken for a Friday decision. On a Friday market
+    holiday, running with that Friday as ``as_of`` selects the prior session.
+    """
     dates = pd.DatetimeIndex(sorted(panel["Date"].unique()))
+    if dates.empty:
+        return dates
+    if weekday not in range(7):
+        raise ValueError("weekday must be between 0 and 6")
+    cutoff = pd.Timestamp(as_of if as_of is not None else dates.max()).normalize()
+    weekday_name = ("MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN")[weekday]
     calendar = pd.DataFrame(index=dates)
-    calendar["period"] = calendar.index.to_period("W-FRI")
-    # Last available trading day in each Friday-ended week.
-    return pd.DatetimeIndex(calendar.groupby("period").apply(lambda x: x.index.max()).values)
+    calendar["period"] = calendar.index.to_period(f"W-{weekday_name}")
+    selected = calendar.groupby("period").apply(lambda x: x.index.max())
+    if completed_only:
+        completed = pd.Series(
+            [period.end_time.normalize() <= cutoff for period in selected.index],
+            index=selected.index,
+        )
+        selected = selected.loc[completed]
+    return pd.DatetimeIndex(selected.values)
