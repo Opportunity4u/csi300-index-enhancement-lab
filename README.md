@@ -1,5 +1,9 @@
 # CSI 300 Index Enhancement Lab
 
+> **Project status: completed individual technical research submission.**
+>
+> Code, tests, audit outputs, documentation, and the forward-monitoring workflow are complete. The final English presentation and written report are submitted separately. See [docs/internship-submission.md](docs/internship-submission.md).
+
 [![CI](https://github.com/Opportunity4u/csi300-index-enhancement-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/Opportunity4u/csi300-index-enhancement-lab/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB.svg)](https://www.python.org/)
@@ -88,7 +92,7 @@ The repository includes aggregate outputs from one historical research run:
 |---|---:|---:|---:|---:|
 | Benchmark proxy | 2.39% | 0.00% | 0.00% | N/A |
 | Cost-aware enhanced | 3.95% | 1.55% | 1.97% | 0.87 |
-| Rolling-window robustness | 2.88% | 0.49% | 1.42% | 0.41 |
+| Rolling-window robustness | 2.88% | 0.49% | 1.57% | 0.41 |
 
 ![Illustrative out-of-sample NAV](results/illustrative/figures/01_oos_nav.png)
 
