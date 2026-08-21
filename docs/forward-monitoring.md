@@ -1,6 +1,6 @@
 # Forward paper-monitoring record
 
-Last updated: **2026-08-20** (Asia/Shanghai)
+Last updated: **2026-08-21** (Asia/Shanghai)
 
 This is an unaudited paper-trading research record. It is not a live fund,
 broker statement or investment advice. The empirical universe remains subject
@@ -10,17 +10,17 @@ to the fixed-current-constituent limitation described in `DATA_NOTICE.md`.
 
 | Metric | Value |
 |---|---:|
-| Market date | 2026-08-20 |
+| Market date | 2026-08-21 |
 | Health | GREEN_WARMUP |
 | Model version | 1a17899582cd |
 | Model train end | 2026-08-14 |
 | Data coverage | 100.0% |
 | Matured 5D Rank IC | N/A |
 | Top-minus-bottom | N/A |
-| Paper active return | -0.02% |
-| 20D tracking error | 9.49% |
-| 20D information ratio | 5.97 |
-| Active drawdown | -0.27% |
+| Paper active return | 0.14% |
+| 20D tracking error | 9.06% |
+| 20D information ratio | 6.07 |
+| Active drawdown | -0.13% |
 
 ## Recent observations
 
@@ -37,6 +37,7 @@ to the fixed-current-constituent limitation described in `DATA_NOTICE.md`.
 | 2026-08-18 | GREEN_WARMUP | 0.3044 | 1.94% | 0.00% |
 | 2026-08-19 | GREEN_WARMUP | N/A | -0.25% | 0.00% |
 | 2026-08-20 | GREEN_WARMUP | N/A | -0.02% | 0.00% |
+| 2026-08-21 | GREEN_WARMUP | N/A | 0.14% | 0.00% |
 
 Ticker-level predictions, holdings and proposed orders are intentionally kept
 outside this public repository.
